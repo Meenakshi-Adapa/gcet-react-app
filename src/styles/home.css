@@ -3,14 +3,24 @@
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
+  background-color: #f0f4e6; /* pastel green background */
+  padding: 20px;
+  border-radius: 12px;
 }
 
 .product-box {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 8px;
-  width: 150px;
+  border: 2px solid #808000; /* olive green */
+  border-radius: 10px;
+  padding: 20px;
+  margin: 12px;
+  width: 180px;
   text-align: center;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 3px 3px 8px rgba(128, 128, 0, 0.3);
+  background-color: #dcedc8; /* pastel green */
+  transition: transform 0.3s ease;
+}
+
+.product-box:hover {
+  transform: scale(1.05);
+  box-shadow: 4px 4px 12px rgba(128, 128, 0, 0.5);
 }

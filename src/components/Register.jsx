@@ -3,6 +3,8 @@ import { AppContext } from "../App";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./Register.css";
+
 export default function Register() {
   const { users, setUsers } = useContext(AppContext);
   const [user, setUser] = useState({});
@@ -19,7 +21,7 @@ export default function Register() {
     }
   };
   return (
-    <div style={{ margin: "30px" }}>
+    <div className="register-container">
       <h3>Register</h3>
       <p>
         <input
@@ -44,12 +46,15 @@ export default function Register() {
       </p>
       <button onClick={handleSubmit}>Submit</button>
       <hr />
-      {users &&
-        users.map((value) => (
-          <li>
-            {value.name}-{value.email}-{value.pass}
-          </li>
-        ))}
+      {users && (
+        <ul className="user-list">
+          {users.map((value) => (
+            <li key={value.email}>
+              {value.name} - {value.email} - {value.pass}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

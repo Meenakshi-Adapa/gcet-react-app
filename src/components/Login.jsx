@@ -3,6 +3,8 @@ import { AppContext } from "../App";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./Login.css";
+
 export default function Login() {
   const { users, user, setUser } = useContext(AppContext);
   const [msg, setMsg] = useState();
@@ -29,9 +31,9 @@ export default function Login() {
   };
 
   return (
-    <div style={{ margin: "30px" }}>
+    <div className="login-container">
       <h3>Login</h3>
-      {msg}
+      {msg && <div className="login-message">{msg}</div>}
       <p>
         <input
           type="text"

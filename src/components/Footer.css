@@ -1,0 +1,12 @@
+.footer-body {
+  background-color: #008080;
+  color: #e0f2f1;
+  text-align: center;
+  padding: 15px 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-top: 3px solid #004d40;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}

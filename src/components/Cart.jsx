@@ -3,6 +3,8 @@ import { AppContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import "./Cart.css";
+
 export default function Cart() {
   const { cart, setCart, products, user } = useContext(AppContext);
   const navigate = useNavigate();
@@ -52,13 +54,13 @@ export default function Cart() {
   };
 
   return (
-    <div>
+    <div className="cart-container">
       <h2>My Cart</h2>
       <hr />
       {products
         .filter((p) => cart[p._id])
         .map((p) => (
-          <div key={p._id}>
+          <div key={p._id} className="cart-item">
             {p.name} - ₹{p.price} -{" "}
             <button onClick={() => decrement(p._id)}>-</button>{" "}
             {cart[p._id]}{" "}
@@ -67,13 +69,15 @@ export default function Cart() {
           </div>
         ))}
       <hr />
-      <h3>Total: ₹{orderValue}</h3>
+      <h3 className="cart-total">Total: ₹{orderValue}</h3>
       <hr />
-      {user?.name ? (
-        <button onClick={placeOrder}>Place Order</button>
-      ) : (
-        <button onClick={loginToOrder}>Login to Order</button>
-      )}
+      <div className="cart-actions">
+        {user?.name ? (
+          <button onClick={placeOrder}>Place Order</button>
+        ) : (
+          <button onClick={loginToOrder}>Login to Order</button>
+        )}
+      </div>
     </div>
   );
 }

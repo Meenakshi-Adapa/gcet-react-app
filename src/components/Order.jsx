@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { AppContext } from "../App";
 import { useEffect } from "react";
 import axios from "axios";
+import "./Order.css";
+
 export default function Order() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,10 +35,10 @@ export default function Order() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
+    <div className="order-container">
       <h3>My Orders</h3>
       {orders && orders.length > 0 ? (
-        <table border="1" cellPadding="5" cellSpacing="0">
+        <table className="order-table" border="1" cellPadding="5" cellSpacing="0">
           <thead>
             <tr>
               <th>Order ID</th>

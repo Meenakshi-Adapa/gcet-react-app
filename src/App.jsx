@@ -1,44 +1,47 @@
-import React, { useState, createContext } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './Header.jsx';
-import Footer from './Footer.jsx';
-import Home from './Home.jsx';
-import Cart from './Cart.jsx';
-import Login from './Login.jsx';
-import SignIn from './SignIn.jsx';
-import './App.css';
-
-// ✅ Create and export context
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import Product from "./components/Product";
+import Cart from "./components/Cart";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Logout from "./components/Logout";
+import Header from "./components/Header";
+import Order from "./components/Order";
+import Footer from "./components/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createContext } from "react";
 export const AppContext = createContext();
-
 function App() {
-  const [user, setUser] = useState({ name: 'Guest' });
-  const [cart, setCart] = useState([]);
-
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item.id === product.id);
-      if (existingProduct) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-  };
-
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState({});
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState({});
   return (
     <div>
-      <AppContext.Provider value={{ user, setUser, cart, addToCart }}>
+      <AppContext.Provider
+        value={{
+          users,
+          setUsers,
+          user,
+          setUser,
+          products,
+          setProducts,
+          cart,
+          setCart,
+        }}
+      >
         <BrowserRouter>
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signIn" element={<SignIn />} />
+            <Route index element={<Product />} />
+            <Route path="/" element={<Product />}></Route>
+            <Route path="/cart" element={<Cart />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+             <Route path="/order" element={<Order />}></Route>
+            <Route path="/logout" element={<Logout />}></Route>
+            <Route path="/register" element={<Register />}></Route>
           </Routes>
           <Footer />
         </BrowserRouter>
@@ -46,6 +49,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
-

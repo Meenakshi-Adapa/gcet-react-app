@@ -1,37 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { AppContext } from "../App";
 import axios from "axios";
 import "./Product.css";
+
 export default function Product() {
   const { user, products, setProducts, cart, setCart } = useContext(AppContext);
-  // const [products, setProducts] = useState([]);
   const API = import.meta.env.VITE_API_URL;
+
+  // Load products
   const fetchProducts = async () => {
-    const res = await axios.get(`${API}/products/all`);
-    setProducts(res.data);
+    try {
+      const res = await axios.get(`${API}/products/all`);
+      setProducts(res.data);
+    } catch (error) {
+      console.error("Failed to load products:", error);
+    }
   };
+
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  // Add product to cart
   const addToCart = (id) => {
-    !cart[id] && setCart({ ...cart, [id]: 1 });
-    
+    setCart((prev) => ({
+      ...prev,
+      [id]: (prev[id] ?? 0) + 1,
+    }));
   };
 
   return (
     <div>
-      <h3>Welcome {user.name}! </h3>
+      <h3>Welcome {user?.name || "Guest"}!</h3>
       <div className="App-Product-Row">
-        {products &&
-          products.map((value) => (
-            <div key={value._id}>
-              <h3>{value.name}</h3>
-              <h4>{value.price}</h4>
-              <button onClick={() => addToCart(value.pid)}>Add to Cart</button>
-            </div>
-          ))}
+        {products?.map((p) => (
+          <div key={p._id} className="product-box">
+            <h3>{p.name}</h3>
+            <h4>₹{p.price}</h4>
+            <button onClick={() => addToCart(p._id)}>Add to Cart</button>
+          </div>
+        ))}
       </div>
     </div>
   );

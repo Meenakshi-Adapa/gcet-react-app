@@ -1,68 +1,79 @@
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { AppContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 export default function Cart() {
   const { cart, setCart, products, user } = useContext(AppContext);
-  const [orderValue, setOrderValue] = useState(0);
-const Navigate = useNavigate()
+  const navigate = useNavigate();
   const API = import.meta.env.VITE_API_URL;
-  useEffect(() => {
-    setOrderValue(
-      products.reduce((sum, value) => {
-        return sum + value.price * (cart[value.pid] ?? 0);
-      }, 0)
-    );
-  }, []);
 
+  // Calculate total order value
+  const orderValue = useMemo(() => {
+    return products.reduce((total, product) => {
+      const qty = cart[product._id] || 0;
+      return total + product.price * qty;
+    }, 0);
+  }, [cart, products]);
+
+  // Increase quantity
   const increment = (id) => {
-    alert(id);
-    cart[id] = cart[id] + 1;
-    console.log(cart);
-  };
-  const decrement = (id) => {
-    alert(id);
-    cart[id] = cart[id] - 1;
-    console.log(cart);
+    setCart({ ...cart, [id]: (cart[id] ?? 0) + 1 });
   };
 
+  // Decrease quantity or remove from cart
+  const decrement = (id) => {
+    if (cart[id] > 1) {
+      setCart({ ...cart, [id]: cart[id] - 1 });
+    } else {
+      const updatedCart = { ...cart };
+      delete updatedCart[id];
+      setCart(updatedCart);
+    }
+  };
+
+  // Place the order
   const placeOrder = async () => {
-    const url = `${API}/orders/new`;
-    await axios.post(url, { email: user.email, orderValue: orderValue });
-    setCart({});
-    Navigate("/order")
+    try {
+      await axios.post(`${API}/orders/new`, {
+        email: user.email,
+        orderValue,
+      });
+      setCart({});
+      navigate("/order");
+    } catch (error) {
+      console.error("Order error:", error);
+      alert("Could not place order. Please try again.");
+    }
   };
 
   const loginToOrder = () => {
-    Navigate("/login")
-  }
+    navigate("/login");
+  };
+
   return (
     <div>
-      My Cart
-      {products &&
-        products.map(
-          (value) =>
-            cart[value.pid] && (
-              <div key={value.pid}>
-                {value.pid}
-                {value.name}-{value.price}-
-                <button onClick={() => decrement(value.pid)}>-</button>
-                {cart[value.pid]}
-                <button onClick={() => increment(value.pid)}>+</button>
-                {value.price * cart[value.pid]}
-              </div>
-            )
-        )}
+      <h2>My Cart</h2>
       <hr />
-      <h3>Order Value:{orderValue}</h3>
+      {products
+        .filter((p) => cart[p._id])
+        .map((p) => (
+          <div key={p._id}>
+            {p.name} - ₹{p.price} -{" "}
+            <button onClick={() => decrement(p._id)}>-</button>{" "}
+            {cart[p._id]}{" "}
+            <button onClick={() => increment(p._id)}>+</button> = ₹
+            {p.price * cart[p._id]}
+          </div>
+        ))}
       <hr />
-      {user.name ? (
+      <h3>Total: ₹{orderValue}</h3>
+      <hr />
+      {user?.name ? (
         <button onClick={placeOrder}>Place Order</button>
       ) : (
         <button onClick={loginToOrder}>Login to Order</button>
       )}
-      <hr />
     </div>
   );
 }

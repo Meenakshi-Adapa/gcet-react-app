@@ -1,11 +1,11 @@
 .footer {
-  background-color: #dcedc8; /* pastel green */
+  background-color: #e0f2f1; /* pastel teal */
   padding: 20px;
   text-align: center;
-  border-top: 3px solid #808000; /* olive green */
+  border-top: 3px solid #004d40; /* dark teal */
   width: 100%;
   bottom: 0;
   font-size: 14px;
-  color: #556b2f; /* dark olive green */
+  color: #004d40; /* dark teal */
   font-weight: 600;
 }

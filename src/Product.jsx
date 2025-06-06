@@ -19,9 +19,8 @@ export default function Product({ product }) {
     <div className="product-box">
       <img src={product.image} alt={product.name} className="product-img" />
       <h3>{product.name}</h3>
-      <p>₹{product.price}</p>
-      <p>{product.category}</p>
-      <p>{product.description}</p>
+      <p className="product-description">{product.description}</p>
+      <p className="product-price">₹{product.price}</p>
       <div className="product-buttons">
         <button className="add-to-cart-btn" onClick={handleAddToCart}>
           Add to Cart

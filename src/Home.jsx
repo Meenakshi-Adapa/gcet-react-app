@@ -24,8 +24,7 @@ export default function Home() {
 
   return (
     <div>
-      <h2>Welcome {user?.name || "Guest"}!</h2>
-      <p>This is the main page of the store.</p>
+      <h2 className="welcome-message">Welcome {user?.name || "Guest"}!</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { AppContext } from "../App";
 import axios from "axios";
 import "./Product.css";
@@ -6,6 +6,7 @@ import "./Product.css";
 export default function Product() {
   const { user, products, setProducts, cart, setCart } = useContext(AppContext);
   const API = import.meta.env.VITE_API_URL;
+  const [showPopup, setShowPopup] = useState(false);
 
   // Load products
   const fetchProducts = async () => {
@@ -27,6 +28,8 @@ export default function Product() {
       ...prev,
       [id]: (prev[id] ?? 0) + 1,
     }));
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
   };
 
   return (
@@ -41,6 +44,7 @@ export default function Product() {
           </div>
         ))}
       </div>
+      {showPopup && <div className="popup">Product added to cart!</div>}
     </div>
   );
 }

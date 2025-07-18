@@ -1,50 +1,62 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useContext } from "react";
 import { AppContext } from "../App";
 import axios from "axios";
-import "./Product.css";
+import "./product.css";
 
 export default function Product() {
   const { user, products, setProducts, cart, setCart } = useContext(AppContext);
   const API = import.meta.env.VITE_API_URL;
-  const [showPopup, setShowPopup] = useState(false);
 
-  // Load products
   const fetchProducts = async () => {
-    try {
-      const res = await axios.get(`${API}/products/all`);
-      setProducts(res.data);
-    } catch (error) {
-      console.error("Failed to load products:", error);
+    if (user && user.token) {
+      console.log("Fetching products with token:", user.token);
+      try {
+        const res = await axios.get(`${API}/products/all`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        setProducts(res.data);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          console.error("Unauthorized access - possibly invalid or expired token.");
+        } else {
+          console.error("Error fetching products:", error);
+        }
+      }
     }
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (user && user.token) {
+      fetchProducts();
+    } else {
+      setProducts([]); // Clear products if not logged in
+    }
+  }, [user]);
 
-  // Add product to cart
   const addToCart = (id) => {
-    setCart((prev) => ({
-      ...prev,
-      [id]: (prev[id] ?? 0) + 1,
-    }));
-    setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 2000);
+    setCart({ ...cart, [id]: (cart[id] || 0) + 1 });
   };
 
+  if (!user || !user.token) {
+    return <div>Please login to see products.</div>;
+  }
+
   return (
-    <div>
-      <h3>Welcome {user?.name || "Guest"}!</h3>
+    <div className="product-container">
+      <h3>Welcome {user.name}! </h3>
       <div className="App-Product-Row">
-        {products?.map((p) => (
-          <div key={p._id} className="product-box">
-            <h3>{p.name}</h3>
-            <h4>₹{p.price}</h4>
-            <button onClick={() => addToCart(p._id)}>Add to Cart</button>
-          </div>
-        ))}
+        {products &&
+          products.map((value) => (
+            <div key={value._id} className="product-box">
+              <h3>{value.name}</h3>
+              <h4>{value.price}</h4>
+              <button onClick={() => addToCart(value._id)}>Add to Cart</button>
+            </div>
+          ))}
       </div>
-      {showPopup && <div className="popup">Product added to cart!</div>}
     </div>
   );
 }

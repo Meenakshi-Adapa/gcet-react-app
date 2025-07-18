@@ -4,7 +4,6 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
-
 export default function Register() {
   const { users, setUsers } = useContext(AppContext);
   const [user, setUser] = useState({});
@@ -21,7 +20,7 @@ export default function Register() {
     }
   };
   return (
-    <div className="register-container">
+    <div style={{ margin: "30px" }}>
       <h3>Register</h3>
       <p>
         <input
@@ -46,15 +45,12 @@ export default function Register() {
       </p>
       <button onClick={handleSubmit}>Submit</button>
       <hr />
-      {users && (
-        <ul className="user-list">
-          {users.map((value) => (
-            <li key={value.email}>
-              {value.name} - {value.email} - {value.pass}
-            </li>
-          ))}
-        </ul>
-      )}
+      {users &&
+        users.map((value) => (
+          <li>
+            {value.name}-{value.email}-{value.pass}
+          </li>
+        ))}
     </div>
   );
 }

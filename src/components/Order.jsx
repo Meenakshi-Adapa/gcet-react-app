@@ -34,6 +34,19 @@ export default function Order() {
   if (loading) return <div>Loading orders...</div>;
   if (error) return <div>{error}</div>;
 
+  // Merge product details from products state into order products
+  const mergeOrderProducts = (orderProducts) => {
+    if (!orderProducts) return [];
+    return orderProducts.map((op) => {
+      const product = products.find((p) => p._id === op.productId);
+      return {
+        name: product ? product.name : "Unknown Product",
+        quantity: op.quantity,
+        price: product ? product.price : 0,
+      };
+    });
+  };
+
   return (
     <div className="order-container">
       <h3>My Orders</h3>
@@ -49,27 +62,30 @@ export default function Order() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.email}</td>
-                <td>₹{order.orderValue}</td>
-                <td>{order.orderDate ? new Date(order.orderDate).toLocaleString() : "N/A"}</td>
-                <td>
-                  {order.products && order.products.length > 0 ? (
-                    <ul>
-                      {order.products.map((prod, index) => (
-                        <li key={index}>
-                          {prod.name} - Qty: {prod.quantity} - Price: ₹{prod.price}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    "No products"
-                  )}
-                </td>
-              </tr>
-            ))}
+            {orders.map((order) => {
+              const mergedProducts = mergeOrderProducts(order.products);
+              return (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.email}</td>
+                  <td>₹{order.orderValue}</td>
+                  <td>{order.orderDate ? new Date(order.orderDate).toLocaleString() : "N/A"}</td>
+                  <td>
+                    {mergedProducts.length > 0 ? (
+                      <ul>
+                        {mergedProducts.map((prod, index) => (
+                          <li key={index}>
+                            {prod.name} - Qty: {prod.quantity} - Price: ₹{prod.price}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      "No products"
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
